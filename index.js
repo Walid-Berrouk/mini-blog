@@ -52,6 +52,51 @@ app.get('/article/:id', (req, res) => {
     }
 })
 
+app.post('/article', (req, res) => {
+    const article = req.query;
+
+    if (!fullValidator(article, articleValidator)) {
+        res.writeHead(500)
+        res.end("Incorrect Data")
+        return
+    }
+
+    try {
+
+        // Solution 1
+        const lastId =  articles.reduce((a, b) => a.id > b.id? a: b).id
+
+        // Solution 2
+        // let check = false
+        // const maxId =  articles.reduce((a, b) => a.id > b.id? a: b).id
+        // for (let lastId = 0; lastId <= maxId; lastId++) {
+        //     articles.forEach(article => {
+        //         if (!check && (article.id != lastId)) {
+        //             lastId++;
+        //         }
+        //         else {
+        //             check = true
+        //         }
+        //     })
+        // }
+        let newArticles = [...articles, {
+            id: lastId + 1,
+            date: new Date(),
+            ...article
+        }]
+
+        fs.writeFileSync("storage/articles.json", JSON.stringify(newArticles))
+
+        res.send("Article Added !")
+
+
+
+    } catch (error) {
+        res.writeHead(500)
+        res.end(error.message)
+    }
+
+})
 
 // Listning on port
 
