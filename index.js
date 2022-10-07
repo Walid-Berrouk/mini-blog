@@ -1,7 +1,7 @@
 const express = require('express')
 const fs = require('fs')
 
-const { fullValidator } = require('./lib')
+const { fullValidator, partialValidator } = require('./lib')
 
 // Data Scheme of articles
 
@@ -27,7 +27,7 @@ const app = express()
 // GET /article/:id
 // POST /article
 // DELETE /article
-// PUT /article
+// PUT /article/:id
 
 // Create routes handles
 
@@ -115,6 +115,40 @@ app.delete('/article', (req, res) => {
             res.end("Article Deleted")
         }
 
+    } catch (error) {
+        res.writeHead(500)
+        res.end(error.message)
+    }
+})
+
+app.put('/article/:id', (req, res) => {
+    const { id } = req.params
+    const newArticle = req.query;
+
+    if (!partialValidator(newArticle, articleValidator)) {
+        res.writeHead(500)
+        res.end("Incorrect Data")
+        return
+    }
+
+    try {
+        // Solution 1
+        // let newArticles = articles
+        // newArticles.forEach((article, index) => {
+        //     if (article.id === parseInt(id)) {
+        //         newArticles[index] = {
+        //             ...newArticles[index],
+        //             ...newArticle,
+        //         }
+        //     }
+        // })
+
+        // Solution 2
+        let newArticles = articles.map(article => article.id === parseInt(id) ? {...article, newArticle} : article )
+
+        fs.writeFileSync("storage/articles.json", JSON.stringify(newArticles))
+
+        res.send("Article modified !")
     } catch (error) {
         res.writeHead(500)
         res.end(error.message)
