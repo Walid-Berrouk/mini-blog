@@ -98,6 +98,26 @@ app.post('/article', (req, res) => {
 
 })
 
+app.delete('/article', (req, res) => {
+    try {
+        const { id } = req.query;
+
+        let newArticles = articles.filter(article => article.id !== parseInt(id))
+
+        if (newArticles.length === articles.length) {
+            throw new Error("Article Not Found !")
+        }
+        else {
+            fs.writeFileSync("storage/articles.json", JSON.stringify(newArticles))
+            res.end("Article Deleted")
+        }
+
+    } catch (error) {
+        res.writeHead(500)
+        res.end(error.message)
+    }
+})
+
 // Listning on port
 
 const PORT  = process.env.PORT || 5000
