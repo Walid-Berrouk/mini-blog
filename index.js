@@ -67,18 +67,21 @@ app.post('/article', (req, res) => {
         const lastId =  articles.reduce((a, b) => a.id > b.id? a: b).id
 
         // Solution 2
-        // let check = false
+        // let lastId;
         // const maxId =  articles.reduce((a, b) => a.id > b.id? a: b).id
-        // for (let lastId = 0; lastId <= maxId; lastId++) {
+        // for (let index = 0; index <= maxId + 1; index++) {
+        //     let check = true
         //     articles.forEach(article => {
-        //         if (!check && (article.id != lastId)) {
-        //             lastId++;
-        //         }
-        //         else {
-        //             check = true
+        //         if (!check && (article.id === index)) {
+        //             check = false
         //         }
         //     })
+        //     if (check) {
+        //         lastId = index
+        //         break;
+        //     }
         // }
+
         let newArticles = [...articles, {
             id: lastId + 1,
             date: new Date(),
