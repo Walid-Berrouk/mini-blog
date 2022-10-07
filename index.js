@@ -42,6 +42,17 @@ app.get('/articles', (req, res) => {
     }
 })
 
+app.get('/article/:id', (req, res) => {
+    const { id } = req.params
+    try {
+        res.send(articles.find(article => article.id == id))
+    } catch (error) {
+        res.writeHead(500)
+        res.end("Error while fetching data, please try again later")
+    }
+})
+
+
 // Listning on port
 
 const PORT  = process.env.PORT || 5000
